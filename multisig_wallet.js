@@ -146,7 +146,7 @@ const generateErc20TransferData = async (dest, value) => {
 	/** Read contract */
 	// await getTransactionCount(true, false)
 
-	// await getTransactions(3);
+	await getTransactions(3);
 
 
 

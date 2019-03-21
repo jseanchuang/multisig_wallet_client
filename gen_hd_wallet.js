@@ -24,7 +24,6 @@ const hdkey = require('ethereumjs-wallet/hdkey');
 function main() {
     // Generate 12 mnemonic words
     const mnemonic = bip39.generateMnemonic(256);
-
     // BIP-39 seed (Hex, 512 bits):
     const seed = bip39.mnemonicToSeedHex(mnemonic);
 
@@ -44,7 +43,7 @@ function main() {
     const wallet = key.derivePath(derivePath).getWallet();
     let child = {
         derivePath: derivePath,
-        address: wallet.getAddressString(),
+        address: wallet.getChecksumAddressString(),
         private_key: wallet.getPrivateKeyString(),
         public_key: wallet.getPublicKeyString(),
      };

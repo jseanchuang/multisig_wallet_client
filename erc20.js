@@ -10,10 +10,9 @@ const web3 = new Web3(new Web3.providers.HttpProvider(FULLNODE_JSON_RPC_URL));
 
 const TOKEN_ADDRESS = '0x722dd3F80BAC40c951b51BdD28Dd19d435762180';  // Ropsten TST Token
 
-
-const OWNER1_ADDR = process.env['OWNER_ADDRESS_1'];
-const OWNER1_PK = new Buffer.from(process.env['OWNER_PK_1'], 'hex');
-const OWNER2_ADDR = process.env['OWNER_ADDRESS_2'];
+const SENDER_ADDR = process.env['SENDER_ADDRESS'];
+const SENDER_PK = new Buffer.from(process.env['SENDER_PRIVATE_KEY'], 'hex');
+const RECEIVER = '0x3b8e71aF45Cdb0DBfd93Bdf5A129aa0eC12cd362';
 
 const queryTransactionCount = async (address) => {
     return await web3.eth.getTransactionCount(address);
@@ -41,9 +40,9 @@ const transfer = async (dest, value) => {
     const dec = await decimals(TOKEN_ADDRESS);
     var amount = web3.utils.toHex(value * Math.pow(10, dec));
     const data = erc20.methods.transfer(dest, amount).encodeABI();
-    const count = await queryTransactionCount(OWNER1_ADDR);
+    const count = await queryTransactionCount(SENDER_ADDR);
     var rawTx = {
-		from: OWNER1_ADDR,
+		from: SENDER_ADDR,
 		nonce: web3.utils.toHex(count),
 		gasPrice: web3.utils.toHex(10 * 1e9),
 		to: TOKEN_ADDRESS,
@@ -56,7 +55,7 @@ const transfer = async (dest, value) => {
     // return
 
 	var tx = new Tx(rawTx);
-	tx.sign(OWNER1_PK);
+	tx.sign(SENDER_PK);
 
 	console.log('start to send....')
 	sendSignedTransaction(tx)
@@ -78,10 +77,10 @@ const decimals = async () => {
 
 (async () => {
     /** Invoke contract */
-    await transfer(OWNER2_ADDR, 0.01)
+    await transfer(RECEIVER, 1)
 
     /** Read contract */
-    // await balanceOf(OWNER1_ADDR);
+    // await balanceOf(SENDER_ADDR);
 })().catch((e) => {
     console.error('');
     console.error(e);
